@@ -31,7 +31,8 @@ app.get("/api/buckets", async (req, res) => {
 
   try {
     // @ts-ignore
-    await GetBucketsByUserID(parseInt(userId));
+    const respose = await GetBucketsByUserID(parseInt(userId));
+    res.status(200).json(respose);
   } catch {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }

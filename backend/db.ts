@@ -24,7 +24,10 @@ export async function GetBucketsByUserID(userId: number) {
   });
   console.log("first", newImage);
 
-  if (!newImage) return new Error("no data found");
+  if (!newImage || newImage.length == 0) {
+    console.log("2");
+    return new Error("no data found");
+  }
 
   return newImage;
 }
