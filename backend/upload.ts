@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const { UploadImageMetaToSQL } = require("./db.js");
+import { UploadImageMetaToSQL } from "./db";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -16,6 +16,4 @@ const storage = multer.diskStorage({
     await UploadImageMetaToSQL(url, 1, file.originalname);
   },
 });
-const upload = multer({ storage });
-
-module.exports = { upload };
+export const upload = multer({ storage });

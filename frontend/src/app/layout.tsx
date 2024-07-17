@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import AuthContext from "@/context/AuthContext";
+import Navbar from "@/components/global/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
               disableTransitionOnChange
             > */}
           <Toaster />
+          <Navbar />
           <div>{children}</div>
           {/* </ThemeProvider> */}
         </AuthContext>

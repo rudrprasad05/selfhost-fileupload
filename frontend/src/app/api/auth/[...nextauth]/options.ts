@@ -19,56 +19,19 @@ export const options: AuthOptions = {
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
-
-    // CredentialsProvider({
-    //   name: "credentials",
-    //   credentials: {
-    //     email: { label: "email", type: "text" },
-    //     password: { label: "password", type: "password" },
-    //   },
-
-    //   async authorize(credentials) {
-    //     if (!credentials?.email || !credentials?.password) {
-    //       throw new Error("invalid credentials");
-    //     }
-
-    //     const user = await prisma.user.findUnique({
-    //       where: {
-    //         email: credentials.email,
-    //       },
-    //     });
-
-    //     if (!user || !user?.hashedPassword) {
-    //       throw new Error("Invalid credentials");
-    //     }
-
-    //     const isCorrectPassword = await bcrypt.compare(
-    //       credentials.password,
-    //       user.hashedPassword
-    //     );
-    //     if (!isCorrectPassword) {
-    //       throw new Error("Invalid credentials");
-    //     }
-
-    //     return user;
-    //   },
-    // }),
   ],
-  // on login you get the user but only once. have to capture it to token
+
   callbacks: {
     async jwt({ token, user, session }) {
       return token;
     },
-    // after capturing user info in the token have to pass it to session.
+
     async session({ session, token, user }) {
-      // session.id = token.id
-      // return session
       return {
         ...session,
       };
     },
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("Sign in", user, account, profile, email, credentials);
       return true;
     },
   },

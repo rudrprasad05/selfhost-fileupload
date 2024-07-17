@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 
-const checkAuthToken = (req, res, next) => {
+export const checkAuthToken = (req, res, next) => {
   const authToken = req.headers["token"];
   if (!authToken) {
     return res.status(401).json({ message: "No token provided" });
@@ -20,5 +20,3 @@ const checkAuthToken = (req, res, next) => {
 
   next();
 };
-
-module.exports = { checkAuthToken };
