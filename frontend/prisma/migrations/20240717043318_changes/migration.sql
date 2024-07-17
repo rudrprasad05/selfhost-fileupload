@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Images` MODIFY `updatedAt` DATETIME(3) NOT NULL;
+
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `emailVerified` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
