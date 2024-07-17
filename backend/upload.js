@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
       file.fieldname + "-" + uniqueSuffix + "." + file.mimetype.split("/")[1];
     cb(null, name);
     const url = `/uploads/${req.headers["bucket"]}/${name}`;
-    await UploadImageMetaToSQL.create({ url, filename: file.originalname });
+    await UploadImageMetaToSQL(url, 1, file.originalname);
   },
 });
 const upload = multer({ storage });

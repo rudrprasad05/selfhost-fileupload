@@ -20,21 +20,22 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId], map: "Account_userId_fkey")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
+model Bucket {
+  id        Int      @id @default(autoincrement())
   name      String
-  email     String    @unique
-  image     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  accounts  Account[]
-  buckets   Bucket[]
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Images    Images[]
+
+  @@index([userId], map: "Bucket_userId_fkey")
 }
 
 model Images {
@@ -44,19 +45,18 @@ model Images {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   bucketId  Int
-  bucket    Bucket   @relation(fields: [bucketId], references: [id], onDelete: Cascade)
+  Bucket    Bucket   @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
   @@index([bucketId], map: "Images_bucketId_fkey")
 }
 
-model Bucket {
-  id        Int      @id @default(autoincrement())
+model User {
+  id        Int       @id @default(autoincrement())
   name      String
-  userId    Int
-  createdAt DateTime @default(now())
+  email     String    @unique
+  image     String?
+  createdAt DateTime  @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  images    Images[]
-
-  @@index([userId], map: "Bucket_userId_fkey")
+  Account   Account[]
+  Bucket    Bucket[]
 }

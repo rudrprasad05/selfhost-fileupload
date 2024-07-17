@@ -1,27 +1,14 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const config = require("./config/config.json").development;
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-  }
-);
+async function UploadImageMetaToSQL(url, bucketId, filename) {
+  const newImage = await prisma.images.create({
+    data: {
+      url,
+      bucketId,
+      filename,
+    },
+  });
+}
 
-const UploadImageMetaToSQL = sequelize.define("Image", {
-  url: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  filename: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
-
-sequelize.sync();
-
-module.exports = { sequelize, UploadImageMetaToSQL };
+module.exports = { UploadImageMetaToSQL };
