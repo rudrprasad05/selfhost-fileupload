@@ -3,13 +3,19 @@ const multer = require("multer");
 const path = require("path");
 const { checkAuthToken } = require("./auth.js");
 const { upload } = require("./upload.js");
+const { UploadImageMetaToSQL } = require("./db.js");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.post("/api/upload", checkAuthToken, upload.single("file"), (req, res) => {
-  res.status(200).json({ message: "Image Uploaded Successfully" });
-});
+app.post(
+  "/api/upload",
+  checkAuthToken,
+  upload.single("file"),
+  async (req, res) => {
+    res.status(200).json({ message: "Image Uploaded Successfully" });
+  }
+);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
