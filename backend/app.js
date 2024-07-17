@@ -1,8 +1,10 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const { checkAuthToken } = require("./auth.js");
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,32 +21,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Middleware to check auth token
-const checkAuthToken = (req, res, next) => {
-  const authToken = req.headers["token"];
-  if (!authToken) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
-  if (authToken !== "token") {
-    res.status(401).json({ message: "Invalid token" });
-  }
-
-  // TODO: add an sql db with list of buckets
-  const bucket = req.headers["bucket"];
-  if (!bucket) {
-    return res.status(401).json({ message: "No bucket provided" });
-  }
-
-  next();
-};
 
 app.post("/api/upload", checkAuthToken, upload.single("file"), (req, res) => {
   res.status(200).json({ message: "Image Uploaded Successfully" });
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("listening on port: " + port);
