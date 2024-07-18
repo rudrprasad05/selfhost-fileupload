@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function UploadImageMetaToSQL(
@@ -16,16 +16,28 @@ export async function UploadImageMetaToSQL(
 }
 
 export async function GetBucketsByUserID(userId: number) {
-  console.log(userId);
   const newImage = await prisma.bucket.findMany({
     where: {
       userId,
     },
   });
-  console.log("first", newImage);
 
   if (!newImage || newImage.length == 0) {
-    console.log("2");
+    return new Error("no data found");
+  }
+
+  return newImage;
+}
+
+export async function NewBucket(userId: number, name: string) {
+  const newImage = await prisma.bucket.create({
+    data: {
+      userId: userId,
+      name: name,
+    },
+  });
+
+  if (!newImage) {
     return new Error("no data found");
   }
 

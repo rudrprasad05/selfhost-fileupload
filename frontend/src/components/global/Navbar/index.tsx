@@ -7,7 +7,6 @@ import getSession from "@/actions/getSession";
 
 const Navbar = async () => {
   const user = await getSession();
-  console.log(user);
 
   return (
     <nav className="bg-card px-10 py-6">
