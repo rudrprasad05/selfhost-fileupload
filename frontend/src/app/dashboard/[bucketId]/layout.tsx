@@ -2,6 +2,7 @@ import getSession from "@/actions/getSession";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Sidenav from "./_components/Sidenav";
+import { GetBucketsbyUserID } from "@/actions/Buckets";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -10,15 +11,19 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: { bucketId: string };
 }>) {
   const session = await getSession();
+
   if (!session?.user) return redirect("/");
+
   return (
-    <div>
-      <Sidenav />
-      {children}
+    <div className="flex px-24 gap-16 pt-6">
+      <Sidenav bucketId={parseInt(params.bucketId)} />
+      <main className="grow">{children}</main>
     </div>
   );
 }

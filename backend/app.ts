@@ -2,7 +2,12 @@
 const path = require("path");
 import { checkAuthToken } from "./auth";
 import { upload } from "./upload";
-import { UploadImageMetaToSQL, GetBucketsByUserID, NewBucket } from "./db";
+import {
+  UploadImageMetaToSQL,
+  GetBucketsByUserID,
+  NewBucket,
+  CheckBucketAuth,
+} from "./db";
 var bodyParser = require("body-parser");
 var fs = require("fs");
 import express, { Express } from "express";
@@ -70,6 +75,29 @@ app.post("/api/buckets", async (req, res) => {
     }
 
     res.status(200).json(respose);
+  } catch {
+    res.status(500).json({ error: "An error occurred while fetching buckets" });
+  }
+});
+
+app.post("/api/buckets/auth", async (req, res) => {
+  let data = req.body;
+  if (!data) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+  console.log(data.params.bucketId);
+
+  try {
+    const respose = await CheckBucketAuth(
+      parseInt(data.params.bucketId),
+      parseInt(data.params.bucketId)
+    );
+    if (respose) {
+      res.status(200).json(respose);
+      console.log("123");
+    } else {
+      res.status(401).json(respose);
+    }
   } catch {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }

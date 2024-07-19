@@ -18,11 +18,17 @@ export async function GetBucketsbyUserID(id: number) {
 }
 
 export async function ValidateBucketOwnership(id: number, bucketId: number) {
-  const res = await axios.post(`http://localhost:3000/api/buckets/auth`, {
-    params: {
-      userId: id,
-      bucketId: bucketId,
-    },
-  });
-  return res;
+  console.log(bucketId);
+
+  try {
+    const res = await axios.post(`http://localhost:3000/api/buckets/auth`, {
+      params: {
+        userId: id,
+        bucketId: bucketId,
+      },
+    });
+    return res;
+  } catch (error) {
+    return null;
+  }
 }

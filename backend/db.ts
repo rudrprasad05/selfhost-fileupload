@@ -43,3 +43,23 @@ export async function NewBucket(userId: number, name: string) {
 
   return newImage;
 }
+
+export async function CheckBucketAuth(userId: number, bucketId: number) {
+  const newImage = await prisma.bucket.findUnique({
+    where: {
+      id: bucketId,
+    },
+    include: {
+      Images: true,
+    },
+  });
+
+  console.log(newImage);
+
+  if (newImage.userId != userId) {
+    return null;
+  }
+  console.log("fire3");
+
+  return newImage;
+}

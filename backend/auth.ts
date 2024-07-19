@@ -1,12 +1,15 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
+import express, { NextFunction } from "express";
+import multer from "multer";
+import path from "path";
 
 export const checkAuthToken = (req, res, next) => {
   const authToken = req.headers["token"];
+  console.log(authToken);
   if (!authToken) {
     return res.status(401).json({ message: "No token provided" });
   }
+
+  console.log(authToken);
 
   if (authToken !== "token") {
     res.status(401).json({ message: "Invalid token" });

@@ -14,9 +14,13 @@ import { FieldValue } from "react-hook-form";
 import { toast } from "sonner";
 
 import { BucketType } from "@/types";
-import { Trash } from "lucide-react";
+import { Trash, Upload } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { headers } from "next/headers";
 
-const DeleteLink = ({ bucket }: { bucket: BucketType }) => {
+const UploadImage = ({ bucket }: { bucket: string }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File>();
@@ -27,33 +31,16 @@ const DeleteLink = ({ bucket }: { bucket: BucketType }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const handleImageUpload = async (file: File) => {
-    const salt = Date.now();
     setImageUpload(true);
+
     if (!file) return;
 
-    try {
-      let data = new FormData();
-      data.append("file", file, "image" + salt.toString());
+    const headers = {
+      token: "token",
+    };
 
-      const res = await fetch("/api/s3-upload", {
-        method: "POST",
-        body: data,
-      })
-        .then(() => {
-          setImageUpload(false);
-          setImageUrl((prev) => [
-            ...prev,
-            `https://mctechfiji.s3.amazonaws.com/alibaba/${
-              "image" + salt.toString()
-            }`,
-          ]);
-          setIsImageInCloud(true);
-          toast.success("Image Uploaded to Cloud");
-        })
-        .catch((e) => {
-          toast("Something went wrong", { description: "Contact site admin" });
-        });
-      // handle the error
+    try {
+      await axios.post("http://localhost:3000/api/upload", file, { headers });
     } catch (e: any) {
       // Handle errors here
       console.error(e);
@@ -65,16 +52,25 @@ const DeleteLink = ({ bucket }: { bucket: BucketType }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Trash className="text-gray-400" size={20} />
+        <Button
+          className={`${buttonVariants({
+            variant: "default",
+          })} flex flex-row gap-2`}
+        >
+          <Upload />
+          Upload Image
+        </Button>
       </DialogTrigger>
       <DialogContent className="min-w-[720px]">
         <DialogHeader>
-          <DialogTitle>New Product</DialogTitle>
-          <DialogDescription>Create New Product</DialogDescription>
+          <DialogTitle>Upload Image</DialogTitle>
+          <DialogDescription>Drag and drop or click</DialogDescription>
         </DialogHeader>
+        <Input onChange={(e) => setFile(e.target?.files[0])} type="file" />
+        <Button onClick={() => handleImageUpload(file)}></Button>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default DeleteLink;
+export default UploadImage;
