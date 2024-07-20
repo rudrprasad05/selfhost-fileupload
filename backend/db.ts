@@ -54,12 +54,9 @@ export async function CheckBucketAuth(userId: number, bucketId: number) {
     },
   });
 
-  console.log(newImage);
-
   if (newImage.userId != userId) {
     return null;
   }
-  console.log("fire3");
 
   return newImage;
 }

@@ -1,13 +1,16 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
+import express from "express";
+import multer from "multer";
+import path from "path";
 import { UploadImageMetaToSQL } from "./db";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    console.log("cb");
     cb(null, `./uploads/${req.headers["bucket"]}/`);
   },
+
   filename: async function (req, file, cb) {
+    console.log("first");
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const name =
       file.fieldname + "-" + uniqueSuffix + "." + file.mimetype.split("/")[1];

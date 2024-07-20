@@ -32,15 +32,20 @@ const UploadImage = ({ bucket }: { bucket: string }) => {
 
   const handleImageUpload = async (file: File) => {
     setImageUpload(true);
+    const formData = new FormData();
+    formData.append("file", file);
 
     if (!file) return;
 
     const headers = {
       token: "token",
+      bucket: "test",
     };
 
     try {
-      await axios.post("http://localhost:3000/api/upload", file, { headers });
+      await axios
+        .post("http://localhost:3000/api/upload", formData, { headers })
+        .then((res) => console.log(res));
     } catch (e: any) {
       // Handle errors here
       console.error(e);

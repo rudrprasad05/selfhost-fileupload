@@ -11,7 +11,7 @@ import {
 var bodyParser = require("body-parser");
 var fs = require("fs");
 import express, { Express } from "express";
-
+import cors from "cors";
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
@@ -29,19 +29,16 @@ app.use(function (req, res, next) {
   );
   next();
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // routes
 // upload new images
-app.post(
-  "/api/upload",
-  checkAuthToken,
-  upload.single("file"),
-  async (req, res) => {
-    res.status(200).json({ message: "Image Uploaded Successfully" });
-  }
-);
+app.post("/api/upload", checkAuthToken, upload.single("file"), (req, res) => {
+  res.status(200).json({ message: "Image Uploaded Successfully" });
+});
 
 // get all buckets associated with user
 app.get("/api/buckets", async (req, res) => {
