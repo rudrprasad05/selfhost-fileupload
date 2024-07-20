@@ -31,11 +31,12 @@ const UploadImage = ({ bucket }: { bucket: string }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
     setImageUpload(true);
+
     const formData = new FormData();
     formData.append("file", file);
-
-    if (!file) return;
 
     const headers = {
       token: "token",
@@ -45,7 +46,11 @@ const UploadImage = ({ bucket }: { bucket: string }) => {
     try {
       await axios
         .post("http://localhost:3000/api/upload", formData, { headers })
-        .then((res) => console.log(res));
+        .then((res) => {
+          toast.success("Image uploaded");
+          router.refresh();
+          setOpen(false);
+        });
     } catch (e: any) {
       // Handle errors here
       console.error(e);

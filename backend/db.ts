@@ -60,3 +60,16 @@ export async function CheckBucketAuth(userId: number, bucketId: number) {
 
   return newImage;
 }
+
+export async function GetImagesForBucket(bucketId: number) {
+  const newImage = await prisma.images.findMany({
+    where: {
+      bucketId: bucketId,
+    },
+  });
+
+  if (!newImage) {
+    return null;
+  }
+  return newImage;
+}

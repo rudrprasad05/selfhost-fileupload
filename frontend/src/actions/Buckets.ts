@@ -32,3 +32,16 @@ export async function ValidateBucketOwnership(id: number, bucketId: number) {
     return null;
   }
 }
+
+export async function GetImagesForOneBucket(bucketId: number) {
+  try {
+    const res = await axios.get(`http://localhost:3000/api/buckets/images`, {
+      params: {
+        bucketId: bucketId,
+      },
+    });
+    return res;
+  } catch (error) {
+    return null;
+  }
+}
