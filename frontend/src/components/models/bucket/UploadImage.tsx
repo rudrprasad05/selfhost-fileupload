@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { headers } from "next/headers";
 
-const UploadImage = ({ bucket }: { bucket: string }) => {
+const UploadImage = ({ bucket }: { bucket: BucketType }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File>();
@@ -40,8 +40,11 @@ const UploadImage = ({ bucket }: { bucket: string }) => {
 
     const headers = {
       token: "token",
-      bucket: "test",
+      bucket: bucket.name,
+      bucketId: bucket.id,
     };
+
+    console.log(headers);
 
     try {
       await axios
@@ -77,6 +80,7 @@ const UploadImage = ({ bucket }: { bucket: string }) => {
           <DialogDescription>Drag and drop or click</DialogDescription>
         </DialogHeader>
         <Input onChange={(e) => setFile(e.target?.files[0])} type="file" />
+
         <Button onClick={() => handleImageUpload(file)}></Button>
       </DialogContent>
     </Dialog>

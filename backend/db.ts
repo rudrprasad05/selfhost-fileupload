@@ -13,6 +13,7 @@ export async function UploadImageMetaToSQL(
       filename,
     },
   });
+  return newImage;
 }
 
 export async function GetBucketsByUserID(userId: number) {
@@ -36,6 +37,7 @@ export async function NewBucket(userId: number, name: string) {
       name: name,
     },
   });
+  console.log(newImage);
 
   if (!newImage) {
     return new Error("no data found");
@@ -71,5 +73,25 @@ export async function GetImagesForBucket(bucketId: number) {
   if (!newImage) {
     return null;
   }
+  return newImage;
+}
+
+export async function DeleteBucket(bucketId: number) {
+  const newImage = await prisma.bucket.delete({
+    where: {
+      id: bucketId,
+    },
+  });
+
+  const res = await prisma.images.deleteMany({
+    where: {
+      bucketId,
+    },
+  });
+
+  if (!newImage) {
+    return null;
+  }
+
   return newImage;
 }

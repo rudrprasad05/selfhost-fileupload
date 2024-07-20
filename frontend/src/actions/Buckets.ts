@@ -14,12 +14,20 @@ export async function GetBucketsbyUserID(id: number) {
       userId: id,
     },
   });
+
+  return res;
+}
+
+export async function GetBucketsbyID(id: number) {
+  const res = await prisma.bucket.findUnique({
+    where: {
+      id,
+    },
+  });
   return res;
 }
 
 export async function ValidateBucketOwnership(id: number, bucketId: number) {
-  console.log(bucketId);
-
   try {
     const res = await axios.post(`http://localhost:3000/api/buckets/auth`, {
       params: {
@@ -34,9 +42,23 @@ export async function ValidateBucketOwnership(id: number, bucketId: number) {
 }
 
 export async function GetImagesForOneBucket(bucketId: number) {
+  console.log("first");
   try {
     const res = await axios.get(`http://localhost:3000/api/buckets/images`, {
       params: {
+        bucketId: bucketId,
+      },
+    });
+    return res;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function DeleteBucketFromDB(bucketId: number) {
+  try {
+    const res = await axios.delete(`http://localhost:3000/api/buckets`, {
+      headers: {
         bucketId: bucketId,
       },
     });

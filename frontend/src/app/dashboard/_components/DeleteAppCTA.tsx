@@ -7,13 +7,13 @@ import { BucketType } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const UploadNewImageCTA = ({ bucket }: { bucket: BucketType }) => {
+const DeleteAppCTA = ({ bucketId }: { bucketId: string }) => {
   return (
     <div className="flex w-full justify-between">
-      <p className="text-xl">Upload Image</p>
-      <ModalCont bucket={bucket} option="uploadImage" />
+      <p className="text-xl">Your Apps</p>
+      <ModalCont bucketId={bucketId} option="deleteBucket" />
     </div>
   );
 };
 
-export default UploadNewImageCTA;
+export default DeleteAppCTA;

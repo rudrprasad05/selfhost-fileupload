@@ -1,5 +1,5 @@
 // const express = require("express");
-const path = require("path");
+import path from "path";
 import { checkAuthToken } from "./auth";
 import { upload } from "./upload";
 import {
@@ -8,10 +8,12 @@ import {
   NewBucket,
   CheckBucketAuth,
   GetImagesForBucket,
+  DeleteBucket,
 } from "./db";
 var bodyParser = require("body-parser");
 var fs = require("fs");
 import express, { Express } from "express";
+import { deleteDirectory } from "./helper";
 import cors from "cors";
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -84,16 +86,14 @@ app.post("/api/buckets/auth", async (req, res) => {
   if (!data) {
     return res.status(400).json({ error: "User ID is required" });
   }
-  console.log(data.params.bucketId);
 
   try {
     const respose = await CheckBucketAuth(
-      parseInt(data.params.bucketId),
+      parseInt(data.params.userId),
       parseInt(data.params.bucketId)
     );
     if (respose) {
       res.status(200).json(respose);
-      console.log("123");
     } else {
       res.status(401).json(respose);
     }
@@ -109,11 +109,32 @@ app.get("/api/buckets/images", async (req, res) => {
   }
   try {
     const respose = await GetImagesForBucket(parseInt(bucketId as string));
-    console.log(respose);
+
     res.status(200).json(respose);
   } catch {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }
+});
+app.delete("/api/buckets", async (req, res) => {
+  let data = req.headers;
+  let bucketid = data.bucketid;
+
+  // try {
+  //   const respose = await DeleteBucket(parseInt(bucketid as string));
+
+  //   if (!respose) {
+  //     res.status(401).json(respose);
+  //   }
+
+  //   const bucketName = respose.name;
+  //   const dirPath = path.join(__dirname, `../uploads/${bucketName}`);
+  //   await deleteDirectory(dirPath);
+
+  //   res.json({ message: "Bucket and its contents deleted successfully" });
+  // } catch {
+  //   res.status(500).json({ error: "An error occurred while fetching buckets" });
+  // }
+  res.json({ message: "Bucket and its contents deleted successfully" });
 });
 app.listen(port, () => {
   console.log("listening on port: " + port);

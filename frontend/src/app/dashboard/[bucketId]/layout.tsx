@@ -1,8 +1,8 @@
 import getSession from "@/actions/getSession";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Sidenav from "./_components/Sidenav";
-import { GetBucketsbyUserID } from "@/actions/Buckets";
+import { GetBucketsbyUserID, ValidateBucketOwnership } from "@/actions/Buckets";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,6 +19,11 @@ export default async function RootLayout({
   const session = await getSession();
 
   if (!session?.user) return redirect("/");
+  const userId = parseInt(session?.user.id as string);
+  const bucketId = parseInt(params.bucketId as string);
+  const auth = await ValidateBucketOwnership(userId, bucketId);
+
+  if (!auth) notFound();
 
   return (
     <div className="flex px-24 gap-16 pt-6">
