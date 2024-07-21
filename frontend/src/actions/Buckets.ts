@@ -57,11 +57,7 @@ export async function GetImagesForOneBucket(bucketId: number) {
 
 export async function DeleteBucketFromDB(bucketId: number) {
   try {
-    const res = await axios.delete(`http://localhost:3000/api/buckets`, {
-      headers: {
-        bucketId: bucketId,
-      },
-    });
+    const res = await axios.delete(`http://localhost:3000/api/buckets`);
     return res;
   } catch (error) {
     return null;

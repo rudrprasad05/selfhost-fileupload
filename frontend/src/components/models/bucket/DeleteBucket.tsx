@@ -26,15 +26,14 @@ const DeleteBucket = ({ bucket }: { bucket: string }) => {
   const [open, setOpen] = useState(false);
 
   async function handleClick() {
-    await DeleteBucketFromDB(parseInt(bucket))
-      .then((r) => {
-        toast.success("App Deleted");
-      })
-      .catch((e) => {
-        toast.error("An error occured");
-        console.log(e);
-      })
-      .finally(() => setOpen(false));
+    const res = await DeleteBucketFromDB(parseInt(bucket));
+    // .then((r) => {
+    //   toast.success("App Deleted");
+    // })
+    // .catch((e) => {
+    //   toast.error("An error occured");
+    //   console.log(e);
+    // })
   }
 
   async function onSubmit(data: BucketType) {
@@ -69,7 +68,10 @@ const DeleteBucket = ({ bucket }: { bucket: string }) => {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <Button onClick={() => handleClick()} variant={"destructive"}>
+          <Button
+            onClick={() => DeleteBucketFromDB(parseInt(bucket))}
+            variant={"destructive"}
+          >
             Delete
           </Button>
         </div>

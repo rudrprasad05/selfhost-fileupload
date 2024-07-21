@@ -118,23 +118,24 @@ app.get("/api/buckets/images", async (req, res) => {
 app.delete("/api/buckets", async (req, res) => {
   let data = req.headers;
   let bucketid = data.bucketid;
+  console.log(bucketid);
 
-  // try {
-  //   const respose = await DeleteBucket(parseInt(bucketid as string));
+  try {
+    const respose = await DeleteBucket(parseInt(bucketid as string));
 
-  //   if (!respose) {
-  //     res.status(401).json(respose);
-  //   }
+    if (!respose) {
+      res.status(401).json(respose);
+    }
 
-  //   const bucketName = respose.name;
-  //   const dirPath = path.join(__dirname, `../uploads/${bucketName}`);
-  //   await deleteDirectory(dirPath);
+    const bucketName = respose.name;
+    const dirPath = path.join(__dirname, `./uploads/${bucketName}`);
+    console.log(dirPath);
+    await deleteDirectory(dirPath);
 
-  //   res.json({ message: "Bucket and its contents deleted successfully" });
-  // } catch {
-  //   res.status(500).json({ error: "An error occurred while fetching buckets" });
-  // }
-  res.json({ message: "Bucket and its contents deleted successfully" });
+    res.json({ message: "Bucket and its contents deleted successfully" });
+  } catch {
+    res.status(500).json({ error: "An error occurred while fetching buckets" });
+  }
 });
 app.listen(port, () => {
   console.log("listening on port: " + port);
