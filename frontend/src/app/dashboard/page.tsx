@@ -7,7 +7,12 @@ import DisplayBucket from "./_components/DisplayBucket";
 const page = async () => {
   const { data: buckets } = await GetBucketsbyUserID(1);
 
-  if (Object.keys(buckets).length === 0) return null;
+  if (Object.keys(buckets).length === 0)
+    return (
+      <div className="px-24 w-full h-full">
+        <CreateNewAppCTA />
+      </div>
+    );
 
   return (
     <div className="px-24 w-full h-full">

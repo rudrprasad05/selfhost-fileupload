@@ -30,11 +30,12 @@ model User {
   id            Int       @id @default(autoincrement())
   name          String
   email         String    @unique
-  emailVerified DateTime?  @default(now())
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  emailVerified DateTime?
   accounts      Account[]
+  ApiKey        ApiKey[]
   buckets       Bucket[]
 }
 
@@ -60,4 +61,16 @@ model Bucket {
   images    Images[]
 
   @@index([userId], map: "Bucket_userId_fkey")
+}
+
+model ApiKey {
+  id              Int      @id @default(autoincrement())
+  accessKeyId     String   @unique @db.VarChar(50)
+  secretAccessKey String   @db.VarChar(50)
+  userId          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+  User            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "ApiKey_userId_fkey")
 }

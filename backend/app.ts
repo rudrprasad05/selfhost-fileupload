@@ -9,6 +9,8 @@ import {
   CheckBucketAuth,
   GetImagesForBucket,
   DeleteBucket,
+  CreateApiKey,
+  GetApiKeys,
 } from "./db";
 var bodyParser = require("body-parser");
 var fs = require("fs");
@@ -59,7 +61,6 @@ app.get("/api/buckets", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }
 });
-
 app.post("/api/buckets", async (req, res) => {
   let data = req.body;
   if (!data) {
@@ -80,7 +81,6 @@ app.post("/api/buckets", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }
 });
-
 app.post("/api/buckets/auth", async (req, res) => {
   let data = req.body;
   if (!data) {
@@ -137,6 +137,35 @@ app.delete("/api/buckets", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }
 });
+
+app.post("/api/api-key", async (req, res) => {
+  let data = req.body;
+  if (!data) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+  try {
+    const response = await CreateApiKey(parseInt(data.params.userId));
+
+    res.status(200).json(response);
+  } catch {
+    res.status(500).json({ error: "An error occurred while fetching buckets" });
+  }
+});
+
+app.get("/api/api-key", async (req, res) => {
+  let { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  try {
+    const response = await GetApiKeys(parseInt(userId as string));
+    res.status(200).json(response);
+  } catch {
+    res.status(500).json({ error: "An error occurred while fetching buckets" });
+  }
+});
+
 app.listen(port, () => {
   console.log("listening on port: " + port);
 });

@@ -26,7 +26,7 @@ const DeleteBucket = ({ bucket }: { bucket: string }) => {
   const [open, setOpen] = useState(false);
 
   async function handleClick() {
-    const res = await DeleteBucketFromDB(parseInt(bucket));
+    const res = await axios.delete(`http://localhost:3000/api/buckets`);
     // .then((r) => {
     //   toast.success("App Deleted");
     // })
@@ -68,10 +68,7 @@ const DeleteBucket = ({ bucket }: { bucket: string }) => {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <Button
-            onClick={() => DeleteBucketFromDB(parseInt(bucket))}
-            variant={"destructive"}
-          >
+          <Button onClick={handleClick} variant={"destructive"}>
             Delete
           </Button>
         </div>

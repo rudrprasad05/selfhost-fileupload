@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateRandomString } from "./helper";
 const prisma = new PrismaClient();
 
 export async function UploadImageMetaToSQL(
@@ -86,6 +87,37 @@ export async function DeleteBucket(bucketId: number) {
   const res = await prisma.images.deleteMany({
     where: {
       bucketId,
+    },
+  });
+
+  if (!newImage) {
+    return null;
+  }
+
+  return newImage;
+}
+export async function CreateApiKey(userId: number) {
+  const accessKeyId = generateRandomString(20); // AWS access keys are typically 20 characters long
+  const secretAccessKey = generateRandomString(40);
+  const newImage = await prisma.apiKey.create({
+    data: {
+      accessKeyId,
+      secretAccessKey,
+      userId,
+    },
+  });
+
+  if (!newImage) {
+    return null;
+  }
+
+  return newImage;
+}
+
+export async function GetApiKeys(userId: number) {
+  const newImage = await prisma.apiKey.findMany({
+    where: {
+      userId: userId,
     },
   });
 
