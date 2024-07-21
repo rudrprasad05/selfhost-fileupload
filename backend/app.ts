@@ -166,6 +166,10 @@ app.get("/api/api-key", async (req, res) => {
   }
 });
 
+app.post("/api/apikey", async (req, res) => {
+  console.log(req);
+});
+
 app.listen(port, () => {
   console.log("listening on port: " + port);
 });
