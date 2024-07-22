@@ -36,7 +36,7 @@ CREATE TABLE `Images` (
     `url` VARCHAR(255) NOT NULL,
     `filename` VARCHAR(255) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(0) NOT NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
     `bucketId` INTEGER NOT NULL,
 
     INDEX `Images_bucketId_fkey`(`bucketId`),
@@ -49,10 +49,25 @@ CREATE TABLE `User` (
     `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `image` VARCHAR(191) NULL,
+    `emailVerified` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ApiKey` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `accessKeyId` VARCHAR(50) NOT NULL,
+    `secretAccessKey` VARCHAR(50) NOT NULL,
+    `userId` INTEGER NOT NULL,
+    `bucketId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `ApiKey_accessKeyId_key`(`accessKeyId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -64,3 +79,9 @@ ALTER TABLE `Bucket` ADD CONSTRAINT `Bucket_userId_fkey` FOREIGN KEY (`userId`) 
 
 -- AddForeignKey
 ALTER TABLE `Images` ADD CONSTRAINT `Images_bucketId_fkey` FOREIGN KEY (`bucketId`) REFERENCES `Bucket`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ApiKey` ADD CONSTRAINT `ApiKey_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ApiKey` ADD CONSTRAINT `ApiKey_bucketId_fkey` FOREIGN KEY (`bucketId`) REFERENCES `Bucket`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

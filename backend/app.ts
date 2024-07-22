@@ -1,6 +1,6 @@
 // const express = require("express");
 import path from "path";
-import { checkAuthToken } from "./auth";
+import { checkAuthToken, checkApiKey } from "./auth";
 import { upload } from "./upload";
 import {
   UploadImageMetaToSQL,
@@ -12,16 +12,17 @@ import {
   CreateApiKey,
   GetApiKeys,
 } from "./db";
-var bodyParser = require("body-parser");
-var fs = require("fs");
 import express, { Express } from "express";
 import { deleteDirectory } from "./helper";
 import cors from "cors";
+
+var bodyParser = require("body-parser");
+var fs = require("fs");
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
 // config
-
+app.use(cors());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -34,17 +35,25 @@ app.use(function (req, res, next) {
   );
   next();
 });
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
-app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
 // routes
 // upload new images
-app.post("/api/upload", checkAuthToken, upload.single("file"), (req, res) => {
-  res.status(200).json({ message: "Image Uploaded Successfully" });
+// upload.single("file"),
+app.post("/api/upload", checkApiKey, upload.single("file"), (req, res) => {
+  const fileBaseUrl = "http://localhost:3000/uploads"; // Change to your actual base URL
+  const fileUrl = `${fileBaseUrl}/${req.body.bucketName}/${req.file.filename}`;
+  console.log();
+  res.status(200).json({
+    message: "Image Uploaded Successfully",
+    fileUrl: fileUrl,
+  });
 });
 // get all buckets associated with user
 app.get("/api/buckets", async (req, res) => {
@@ -143,10 +152,16 @@ app.post("/api/api-key", async (req, res) => {
   if (!data) {
     return res.status(400).json({ error: "User ID is required" });
   }
-  try {
-    const response = await CreateApiKey(parseInt(data.params.userId));
+  console.log(req.headers);
 
-    res.status(200).json(response);
+  try {
+    const response = await CreateApiKey(
+      parseInt(req.headers["userid"] as string),
+      parseInt(req.headers["bucketid"] as string)
+    );
+    console.log(data.params.bucketId, data.params.userId);
+
+    res.status(200).json("response");
   } catch {
     res.status(500).json({ error: "An error occurred while fetching buckets" });
   }
@@ -166,9 +181,19 @@ app.get("/api/api-key", async (req, res) => {
   }
 });
 
-app.post("/api/apikey", async (req, res) => {
-  console.log(req);
-});
+app.post(
+  "/api/apikey",
+  checkApiKey,
+  upload.single("file"),
+  async (req, res) => {
+    console.log("Route handler");
+    console.log("Headers:", req.headers);
+    console.log("API Key:", req.headers["x-api-key"]);
+    console.log("API Secret:", req.headers["x-api-secret"]);
+    console.log("File:", req.file); // Debugging statement
+    res.status(200).json("response");
+  }
+);
 
 app.listen(port, () => {
   console.log("listening on port: " + port);

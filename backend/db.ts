@@ -96,7 +96,7 @@ export async function DeleteBucket(bucketId: number) {
 
   return newImage;
 }
-export async function CreateApiKey(userId: number) {
+export async function CreateApiKey(userId: number, bucketId: number) {
   const accessKeyId = generateRandomString(20); // AWS access keys are typically 20 characters long
   const secretAccessKey = generateRandomString(40);
   const newImage = await prisma.apiKey.create({
@@ -104,6 +104,7 @@ export async function CreateApiKey(userId: number) {
       accessKeyId,
       secretAccessKey,
       userId,
+      bucketId,
     },
   });
 
@@ -126,4 +127,28 @@ export async function GetApiKeys(userId: number) {
   }
 
   return newImage;
+}
+
+export async function VerifyApiKeys(key: string, secret: string) {
+  const res = await prisma.apiKey.findUnique({
+    where: {
+      accessKeyId: key,
+    },
+  });
+  if (res.secretAccessKey == secret) {
+    return true;
+  } else return null;
+}
+
+export async function GetBucketByApiKey(key: string) {
+  const res = await prisma.apiKey.findUnique({
+    where: {
+      accessKeyId: key,
+    },
+    include: {
+      bucket: true,
+    },
+  });
+  if (!res) return null;
+  return res.bucket;
 }

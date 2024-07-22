@@ -28,12 +28,13 @@ model Account {
 
 model Bucket {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String @unique
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Images    Images[]
+  apikeys   ApiKey?
 
   @@index([userId], map: "Bucket_userId_fkey")
 }
@@ -51,24 +52,26 @@ model Images {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  image     String?
-  emailVerified          DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Account   Account[]
-  Bucket    Bucket[]
-  apiKeys   ApiKey[]
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Account       Account[]
+  Bucket        Bucket[]
+  apiKeys       ApiKey[]
 }
 
 model ApiKey {
-  id     Int       @id @default(autoincrement())
-  accessKeyId     String    @unique @db.VarChar(50)
-  secretAccessKey String    @db.VarChar(50)
-  userId Int
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id              Int      @id @default(autoincrement())
+  accessKeyId     String   @unique @db.VarChar(50)
+  secretAccessKey String   @db.VarChar(50)
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bucketId        Int @unique
+  bucket          Bucket   @relation(fields: [bucketId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
